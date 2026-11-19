@@ -176,7 +176,21 @@
                         <option value="Maishiy texnika">Maishiy texnika</option>
                         <option value="Boshqa">Boshqa</option>
                     </select>
-                    <input type="url" id="prodImage" placeholder="Rasm URL manzili (ixtiyoriy)">
+
+                    <!-- Galereya / Kompyuterdan rasm tanlash -->
+                    <div class="gallery-upload-box">
+                        <label for="prodImageFile" class="gallery-pick-btn">
+                            🖼️ Galereyadan rasm tanlash
+                        </label>
+                        <input type="file" id="prodImageFile" accept="image/*" class="hidden-file-input" onchange="handleImageFileChange(event)">
+                        <span id="selectedFileName" class="file-name-text">Rasm tanlanmagan</span>
+                    </div>
+
+                    <div id="imagePreviewWrap" class="image-preview-wrap span-2 hidden">
+                        <img id="imagePreview" src="" alt="Tanlangan rasm ko'rinishi">
+                        <button type="button" class="btn btn-sm btn-rose" onclick="clearSelectedImage()">Rasmni olib tashlash</button>
+                    </div>
+
                     <button type="submit" class="btn btn-emerald span-2">+ Mahsulotni Do'konga Joylash</button>
                 </form>
 

@@ -477,6 +477,65 @@ body {
     border-color: var(--cyan);
 }
 
+/* Gallery Upload Box */
+.gallery-upload-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    border: 1px dashed rgba(6, 182, 212, 0.45);
+    background: var(--bg-input);
+    min-height: 42px;
+}
+
+.hidden-file-input {
+    display: none !important;
+}
+
+.gallery-pick-btn {
+    background: rgba(6, 182, 212, 0.16);
+    color: #67e8f9;
+    border: 1px solid rgba(6, 182, 212, 0.35);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.gallery-pick-btn:hover {
+    background: rgba(6, 182, 212, 0.28);
+}
+
+.file-name-text {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.image-preview-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+}
+
+.image-preview-wrap img {
+    width: 76px;
+    height: 58px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
 /* Cart */
 .cart-list {
     max-height: 240px;

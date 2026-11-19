@@ -1,6 +1,6 @@
 // Faqat admin login/paroli (ekranda ko'rinmaydi)
-const ADMIN_LOGIN = 'adminjons';
-const ADMIN_PASS = 'adminbekka';
+const ADMIN_LOGIN = 'admin';
+const ADMIN_PASS = '1234';
 
 const defaultProducts = [
     {
@@ -37,6 +37,7 @@ let products = JSON.parse(localStorage.getItem('techstore_products')) || default
 let orders = JSON.parse(localStorage.getItem('techstore_orders')) || [];
 let cart = JSON.parse(localStorage.getItem('techstore_cart')) || [];
 let isAdmin = JSON.parse(localStorage.getItem('techstore_isAdmin')) || false;
+let uploadedImageDataUrl = "";
 
 function saveState() {
     localStorage.setItem('techstore_products', JSON.stringify(products));
@@ -87,6 +88,47 @@ function logout() {
     saveState();
     updateHeaderUI();
     document.getElementById('adminModal').classList.add('hidden');
+}
+
+// Galereya / Fayldan rasm o'qish va hajmini ixchamlashtirish
+function handleImageFileChange(event) {
+    const file = event.target.files && event.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+        alert("Iltimos, faqat rasm faylini tanlang!");
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            const maxWidth = 800;
+            const scale = img.width > maxWidth ? maxWidth / img.width : 1;
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            uploadedImageDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+            document.getElementById('selectedFileName').textContent = file.name;
+            document.getElementById('imagePreview').src = uploadedImageDataUrl;
+            document.getElementById('imagePreviewWrap').classList.remove('hidden');
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function clearSelectedImage() {
+    uploadedImageDataUrl = "";
+    document.getElementById('prodImageFile').value = "";
+    document.getElementById('selectedFileName').textContent = "Rasm tanlanmagan";
+    document.getElementById('imagePreview').src = "";
+    document.getElementById('imagePreviewWrap').classList.add('hidden');
 }
 
 // Catalog Render
@@ -255,21 +297,32 @@ function addProduct(e) {
     const name = document.getElementById('prodName').value.trim();
     const price = Number(document.getElementById('prodPrice').value);
     const category = document.getElementById('prodCategory').value;
-    const image = document.getElementById('prodImage').value.trim();
+
+    const fallbackSvg = "data:image/svg+xml;utf8," + encodeURIComponent(
+        `<svg xmlns='http://www.w3.org/2000/svg' width='500' height='300'><rect width='100%' height='100%' fill='#0d1322'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='#67e8f9' font-family='sans-serif' font-size='22'>${name}</text></svg>`
+    );
 
     products.unshift({
         id: Date.now(),
         name,
         price,
         category,
-        image: image || `https://via.placeholder.com/500x300/0d1322/67e8f9?text=${encodeURIComponent(name)}`
+        image: uploadedImageDataUrl || fallbackSvg
     });
 
-    saveState();
+    try {
+        saveState();
+    } catch (err) {
+        alert("Rasm hajmi biroz katta ekan, kichikroq rasm tanlang!");
+        products.shift();
+        return;
+    }
+
     updateHeaderUI();
     renderProducts();
     renderAdminProducts();
     document.getElementById('addProductForm').reset();
+    clearSelectedImage();
     alert("Mahsulot do'konga joylandi!");
 }
 
